@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Country Data</title>
+  <style>
+    #error-message {
+      color: red;
+      font-weight: bold;
+    }
+    #country-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    #country-list li {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Country Data</h1>
+  <div id="error-message"></div>
+  <ul id="country-list"></ul>
+
+  <script>
+    async function getCountryData() {
+      const errorMessageDiv = document.getElementById('error-message');
+      const countryList = document.getElementById('country-list');
+
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const countries = await response.json();
+
+        // Clear previous errors if any
+        errorMessageDiv.textContent = '';
+
+        // Display country data in the console and on the webpage
+        countries.forEach(country => {
+          const listItem = document.createElement('li');
+          listItem.textContent = `Name: ${country.name.common}, Region: ${country.region}`;
+          countryList.appendChild(listItem);
+        });
+
+        console.log(countries); // Log the entire countries data to the console
+      } catch (error) {
+        // Handle any errors during fetch or data processing
+        console.error('Error fetching country data:', error);
+        errorMessageDiv.textContent = 'Failed to fetch country data. Please try again later.';
+      }
+    }
+
+    // Call the function to fetch and display country data when the page loads
+    window.onload = getCountryData;
+  </script>
+</body>
+</html>
